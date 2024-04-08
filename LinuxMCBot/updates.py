@@ -1,0 +1,38 @@
+import utils
+import config
+
+from urllib.request import urlopen, urlretrieve
+import discord
+from discord.ext import tasks, commands
+
+
+def check():
+  url = "https://raw.githubusercontent.com/Nexumi/LinuxMCBot/main/LinuxMCBot/config.py"
+  try:
+    version = eval("\n".join([line.decode("utf-8") for line in urlopen(url).read().splitlines()[-5:]]).replace("version = ", ""))
+  except:
+    return None
+
+  if new(version):
+    print("[\033[34mnotice\033[0m] A new release of LinuxMCBot is available: \033[31m" +\
+      simpleName(config.version) + "\033[0m -> \033[32m" + simpleName(version) + "\033[0m")
+
+
+def new(version):
+  return config.version["major"] != version["major"] or\
+         config.version["minor"] != version["minor"] or\
+         config.version["patch"] != version["patch"]
+
+
+def simpleName(v):
+  return f"v{v['major']}.{v['minor']}.{v['patch']}"
+
+
+class UpdateChecker(commands.Cog):
+  def __init__(self):
+    self.check.start()
+
+
+  @tasks.loop(hours=24)
+  async def check(self):
+    check()
