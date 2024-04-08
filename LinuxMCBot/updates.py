@@ -15,7 +15,7 @@ def check():
 
   if new(version):
     print("[\033[34mnotice\033[0m] A new release of LinuxMCBot is available: \033[31m" +\
-      simpleName(config.version) + "\033[0m -> \033[32m" + simpleName(version) + "\033[0m")
+      simpleName() + "\033[0m -> \033[32m" + simpleName(version) + "\033[0m")
 
 
 def new(version):
@@ -24,7 +24,7 @@ def new(version):
          config.version["patch"] != version["patch"]
 
 
-def simpleName(v):
+def simpleName(v = config.version):
   return f"v{v['major']}.{v['minor']}.{v['patch']}"
 
 

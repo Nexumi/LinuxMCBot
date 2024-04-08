@@ -198,7 +198,7 @@ async def usage(ctx):
 @bot.slash_command(description="(Admin Only) Reload from config file.")
 @discord.guild_only()
 async def reload(ctx):
-  if await utils.isValidUser(ctx):
+  if await utils.isAdminUser(ctx):
     config.parse()
     utils.botReady(await bot.application_info())
     await ctx.respond(
@@ -216,7 +216,7 @@ async def about(ctx):
   message = [
     "### The LinuxMCBot Project",
     "Created By: Nexumi",
-    "Running: v1.0.0",
+    f"Running: {updates.simpleName()}",
     "[GitHub](https://github.com/Nexumi/LinuxMCBot)"
   ]
   await ctx.respond(
