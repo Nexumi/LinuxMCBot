@@ -15,8 +15,8 @@ f"""#######################################################
 token = {token if token else "BOT_TOKEN_HERE"}
 
 
-# This sets the owner of the bot
-# This needs to be the owner's ID (a 17-18 digit number)
+# This sets the admins of the bot
+# This needs to be the admin's ID (a 17-18 digit number)
 # Example: admins = [954230687912053468, 74108529639510753]
 
 admins = []
