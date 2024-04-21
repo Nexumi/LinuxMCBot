@@ -49,7 +49,7 @@ class WaitForLog(commands.Cog):
     if self.seconds < self.timeout:
       with open(f"{config.home}/logs/latest.log") as log:
         data = log.read()
-        if "[net.minecraft.server.dedicated.DedicatedServer/]: Done" in data:
+        if "]: Done (" in data and ')! For help, type "help"' in data:
           await self.stop()
           return
     else:

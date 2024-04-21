@@ -18,9 +18,9 @@ def check():
 
 
 def new(version):
-  return config.version["major"] != version["major"] or\
-         config.version["minor"] != version["minor"] or\
-         config.version["patch"] != version["patch"]
+  return config.version["major"] < version["major"] or\
+         config.version["minor"] < version["minor"] or\
+         config.version["patch"] < version["patch"]
 
 
 def simpleName(v = config.version):

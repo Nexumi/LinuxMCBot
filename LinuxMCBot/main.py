@@ -31,6 +31,26 @@ async def on_ready():
   utils.botReady(await bot.application_info())
 
 
+@bot.slash_command(description="Get a list of all available commands.")
+@discord.guild_only()
+async def help(ctx):
+  if await utils.isValidUser(ctx):
+    if bot.commands:
+      commands = []
+      for command in bot.commands:
+        commands.append(f"### /{command.name}\n{command.description}")
+    else:
+      commands = ["Bot is still warming up, please try again in a few seconds."]
+    await ctx.respond(
+      embed=discord.Embed(
+        color=config.color,
+        description="\n".join(commands)
+      ),
+      ephemeral=True
+    )
+
+
+
 @bot.slash_command(description="Gives the server ip. Paste in minecraft server address.")
 @discord.guild_only()
 async def ip(ctx):
@@ -83,7 +103,8 @@ async def guide(ctx):
 @discord.guild_only()
 async def start(ctx):
   if await utils.isValidUser(ctx):
-    if utils.isTmuxActive():
+    out, err = utils.Popen("tmux ls | grep minecraft-server")
+    if out.startswith("minecraft-server: "):
       if "(attached)" not in out:
         subprocess.call(f"x-terminal-emulator -e tmux a -t minecraft-server", shell=True)
       await ctx.respond(
