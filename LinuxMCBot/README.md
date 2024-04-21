@@ -42,6 +42,9 @@ sudo apt update
 sudo apt install git python3
 git clone https://github.com/Nexumi/LinuxMCBot.git
 cd LinuxMCBot/LinuxMCBot
+python3 -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
 chmod +x compile.sh
 ./compile.sh
 ```
