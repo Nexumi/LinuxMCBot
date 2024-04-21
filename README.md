@@ -4,7 +4,7 @@
 ## Requirements
 ```
 sudo apt update
-sudo apt install screen python3
+sudo apt install tmux python3
 ```
 
 Bot invitation permissions:

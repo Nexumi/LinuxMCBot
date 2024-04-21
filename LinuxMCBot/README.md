@@ -5,7 +5,7 @@
 ### First Time Setup
 ```
 sudo apt update
-sudo apt install git screen python3
+sudo apt install git tmux python3
 git clone https://github.com/Nexumi/LinuxMCBot.git
 cd LinuxMCBot/LinuxMCBot
 python3 -m venv .venv
@@ -24,7 +24,7 @@ python main.py
 ### First Time Setup
 ```
 sudo apt update
-sudo apt install git screen python3
+sudo apt install git tmux python3
 git clone https://github.com/Nexumi/LinuxMCBot.git
 cd LinuxMCBot/LinuxMCBot
 pip3 install -r requirements.txt
