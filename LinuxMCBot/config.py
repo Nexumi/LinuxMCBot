@@ -1,23 +1,11 @@
+import utils
+
 import os
 import discord
 
 
 def parse():
   global token, admins, game, status, color, mods, forge, guide, name, ip, home, start
-
-  def hexaToDeci(hexa):
-    if hexa.startswith("#"):
-      hexa = hexa[1:]
-      if len(hexa) == 3:
-        for h in hexa:
-          hexa += h * 2
-        hexa = hexa[3:]
-
-      try:
-        return int(hexa, 16)
-      except:
-        pass
-    return 0
 
   with open("config.txt") as cfg:
     data = cfg.read().splitlines()
@@ -63,7 +51,7 @@ def parse():
           elif mode == "INVISIBLE":
             status = discord.Status.invisible
         elif line.startswith("color = "):
-          color = hexaToDeci(line[8:])
+          color = utils.hexaToDeci(line[8:])
         elif line.startswith("mods = "):
           mods = line[7:]
         elif line.startswith("forge = "):
@@ -97,6 +85,6 @@ start = ""
 
 version = {
   "major": 1,
-  "minor": 0,
-  "patch": 1
+  "minor": 1,
+  "patch": 0
 }

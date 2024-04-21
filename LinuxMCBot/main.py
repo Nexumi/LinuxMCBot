@@ -2,6 +2,7 @@ import utils
 import fresh
 import config
 import updates
+import minecraft
 
 import subprocess
 import psutil
@@ -9,6 +10,7 @@ import discord
 from mcstatus import JavaServer
 
 
+subprocess.call(f"clear", shell=True)
 print("\033[33mPlease use ctrl + c to shutdown the bot\033[0m")
 updates.UpdateChecker()
 
@@ -81,12 +83,9 @@ async def guide(ctx):
 @discord.guild_only()
 async def start(ctx):
   if await utils.isValidUser(ctx):
-    p = subprocess.Popen("screen -list | grep minecraft-server", stdout=subprocess.PIPE, shell=True)
-    out, err = p.communicate()
-    out = out.decode("utf-8")
-    if out:
-      if "(Detached)" in out:
-        subprocess.call(f"x-terminal-emulator -e screen -S minecraft-server -r", shell=True)
+    if utils.isTmuxActive():
+      if "(attached)" not in out:
+        subprocess.call(f"x-terminal-emulator -e tmux a -t minecraft-server", shell=True)
       await ctx.respond(
         embed=discord.Embed(
           color=config.color,
@@ -94,36 +93,34 @@ async def start(ctx):
         )
       )
     else:
-      subprocess.call(f"x-terminal-emulator -e screen -S minecraft-server bash -c 'cd\
-        {config.home} && ./{config.start}'", shell=True)
-      await ctx.respond(
+      subprocess.call(f"x-terminal-emulator -e tmux new-session -A -s minecraft-server -c {config.home} './{config.start}'", shell=True)
+      subprocess.call(f"x-terminal-emulator -e tmux set-option -t minecraft-server -g mouse on", shell=True)
+      message = await ctx.respond(
         embed=discord.Embed(
           color=config.color,
           description="Server is starting"
         )
       )
+      minecraft.WaitForLog(message)
 
 
-@bot.slash_command(description="Stop server.")
+@bot.slash_command(description="(Admin Only) Stop server.")
 @discord.guild_only()
 async def stop(ctx):
-  if await utils.isValidUser(ctx):
-    p = subprocess.Popen("screen -list | grep minecraft-server", stdout=subprocess.PIPE, shell=True)
-    out, err = p.communicate()
-    out = out.decode("utf-8")
-    if not out:
+  if await utils.isAdminUser(ctx):
+    if utils.isTmuxActive():
+      utils.tmuxSend("stop")
+      await ctx.respond(
+        embed=discord.Embed(
+          color=config.color,
+          description="Server has stopped"
+        )
+      )
+    else:
       await ctx.respond(
         embed=discord.Embed(
           color=config.color,
           description="Server isn't running"
-        )
-      )
-    else:
-      subprocess.call("screen -S minecraft-server -X stuff 'stop\n'", shell=True)
-      await ctx.respond(
-        embed=discord.Embed(
-          color=config.color,
-          description="Server is stopping"
         )
       )
 
@@ -193,6 +190,52 @@ async def usage(ctx):
       ),
       ephemeral=True
     )
+
+
+@bot.slash_command(description="(Admin Only) Get server health via spark.")
+@discord.guild_only()
+async def health(ctx, memory: discord.commands.Option(bool, "use --memory", required=False, default=False)):
+  if await utils.isAdminUser(ctx):
+    if utils.isTmuxActive():
+      message = await ctx.respond(
+        embed=discord.Embed(
+          color=config.color,
+          description="Generating..."
+        ),
+        ephemeral=True
+      )
+      utils.tmuxSend(f"spark health{' --memory' if memory else ''}", message)
+    else:
+      await ctx.respond(
+        embed=discord.Embed(
+          color=config.color,
+          description="Server is offline"
+        ),
+        ephemeral=True
+      )
+
+
+@bot.slash_command(description="(Admin Only) Get server's spark profile link.")
+@discord.guild_only()
+async def profile(ctx):
+  if await utils.isAdminUser(ctx):
+    if utils.isTmuxActive():
+      message = await ctx.respond(
+        embed=discord.Embed(
+          color=config.color,
+          description="Generating..."
+        ),
+        ephemeral=True
+      )
+      utils.tmuxSend("spark profiler open", message)
+    else:
+      await ctx.respond(
+        embed=discord.Embed(
+          color=config.color,
+          description="Server is offline"
+        ),
+        ephemeral=True
+      )
 
 
 @bot.slash_command(description="(Admin Only) Reload from config file.")

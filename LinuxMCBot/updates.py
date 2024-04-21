@@ -2,7 +2,6 @@ import utils
 import config
 
 from urllib.request import urlopen, urlretrieve
-import discord
 from discord.ext import tasks, commands
 
 
