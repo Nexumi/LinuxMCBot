@@ -20,6 +20,22 @@ source .venv/bin/activate
 python main.py
 ```
 
+## Direct Run (No Virtual Environment)
+### First Time Setup
+```
+sudo apt update
+sudo apt install git screen python3
+git clone https://github.com/Nexumi/LinuxMCBot.git
+cd LinuxMCBot/LinuxMCBot
+pip3 install -r requirements.txt
+```
+
+### Run
+```
+cd /path/to/LinuxMCBot/LinuxMCBot
+python3 main.py
+```
+
 ## Build
 ```
 sudo apt update

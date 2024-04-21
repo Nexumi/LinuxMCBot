@@ -4,7 +4,7 @@
 ## Requirements
 ```
 sudo apt update
-sudo apt install screen
+sudo apt install screen python3
 ```
 
 Bot invitation permissions:
