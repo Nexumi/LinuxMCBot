@@ -6,7 +6,7 @@ Workaround code to launch precompiled version in a terminal. NOT required if run
 ## Build
 ```
 sudo apt update
-sudo apt install git python3
+sudo apt install git python3 python3.10-venv
 git clone https://github.com/Nexumi/LinuxMCBot.git
 cd LinuxMCBot/Launcher
 chmod +x compile.sh

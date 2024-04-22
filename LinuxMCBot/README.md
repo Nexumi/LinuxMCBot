@@ -5,7 +5,7 @@
 ### First Time Setup
 ```
 sudo apt update
-sudo apt install git tmux python3
+sudo apt install git tmux python3 python3.10-venv
 git clone https://github.com/Nexumi/LinuxMCBot.git
 cd LinuxMCBot/LinuxMCBot
 python3 -m venv .venv
@@ -39,7 +39,7 @@ python3 main.py
 ## Build
 ```
 sudo apt update
-sudo apt install git python3
+sudo apt install git python3 python3.10-venv
 git clone https://github.com/Nexumi/LinuxMCBot.git
 cd LinuxMCBot/LinuxMCBot
 python3 -m venv .venv
