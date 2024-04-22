@@ -44,7 +44,9 @@ def parse():
             game = discord.Activity(name=message, type=discord.ActivityType.watching)
         elif line.startswith("status = "):
           mode = line[9:]
-          if mode == "IDLE":
+          if mode == "ONLINE":
+            status = discord.Status.online
+          elif mode == "IDLE":
             status = discord.Status.idle
           elif mode == "DND":
             status = discord.Status.dnd
@@ -86,5 +88,5 @@ start = ""
 version = {
   "major": 1,
   "minor": 1,
-  "patch": 1
+  "patch": 2
 }

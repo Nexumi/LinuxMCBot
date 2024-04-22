@@ -106,7 +106,7 @@ async def start(ctx):
     out, err = utils.Popen("tmux ls | grep minecraft-server")
     if out.startswith("minecraft-server: "):
       if "(attached)" not in out:
-        subprocess.call(f"x-terminal-emulator -e tmux a -t minecraft-server", shell=True)
+        subprocess.call(f"x-terminal-emulator -e tmux a -t minecraft-server &", shell=True)
       await ctx.respond(
         embed=discord.Embed(
           color=config.color,
@@ -114,8 +114,8 @@ async def start(ctx):
         )
       )
     else:
-      subprocess.call(f"x-terminal-emulator -e tmux new-session -A -s minecraft-server -c {config.home} './{config.start}'", shell=True)
-      subprocess.call(f"x-terminal-emulator -e tmux set-option -t minecraft-server -g mouse on", shell=True)
+      subprocess.call(f"x-terminal-emulator -e tmux new-session -s minecraft-server -c {config.home} './{config.start}' &", shell=True)
+      subprocess.call("sleep 1 && tmux set-option -t minecraft-server -g mouse on &", shell=True)
       message = await ctx.respond(
         embed=discord.Embed(
           color=config.color,
@@ -213,17 +213,16 @@ async def usage(ctx):
     )
 
 
-@bot.slash_command(description="(Admin Only) Get server health via spark.")
+@bot.slash_command(description="Get server health via spark.")
 @discord.guild_only()
 async def health(ctx, memory: discord.commands.Option(bool, "use --memory", required=False, default=False)):
-  if await utils.isAdminUser(ctx):
+  if await utils.isValidUser(ctx):
     if utils.isTmuxActive():
       message = await ctx.respond(
         embed=discord.Embed(
           color=config.color,
           description="Generating..."
         ),
-        ephemeral=True
       )
       utils.tmuxSend(f"spark health{' --memory' if memory else ''}", message)
     else:
@@ -232,7 +231,6 @@ async def health(ctx, memory: discord.commands.Option(bool, "use --memory", requ
           color=config.color,
           description="Server is offline"
         ),
-        ephemeral=True
       )
 
 
@@ -264,6 +262,7 @@ async def profile(ctx):
 async def reload(ctx):
   if await utils.isAdminUser(ctx):
     config.parse()
+    await bot.change_presence(status=config.status, activity=config.game)
     utils.botReady(await bot.application_info())
     await ctx.respond(
       embed=discord.Embed(
