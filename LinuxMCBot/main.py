@@ -86,14 +86,14 @@ async def forge(ctx):
     )
 
 
-@bot.slash_command(description="Sends a link to a wiki/documentation site. Everyone say thanks to Braden.")
+@bot.slash_command(description="Sends a link to a wiki/documentation site.")
 @discord.guild_only()
 async def guide(ctx):
   if await utils.isValidUser(ctx):
     await ctx.respond(
       embed=discord.Embed(
         color=config.color,
-        description=f"[Braden's Guide]({config.guide})"
+        description=f"[Guide]({config.guide})"
       )
     )
 
