@@ -23,10 +23,23 @@ def hexaToDeci(hexa):
   return 0
 
 
-def getProp(props, prop):
-  serverPort = props.index(f"{prop}=") + len(prop) + 1
-  endl = props.index("\n", serverPort)
-  return props[serverPort:endl]
+def getProp(prop):
+  try:
+    with open(f"{config.home}/server.properties") as infile:
+      props = infile.read()
+  except:
+    return ""
+
+  start = props.find(f"{prop}=")
+  if start == -1:
+    return ""
+  start += len(prop) + 1
+
+  end = props.find("\n", start)
+  if end == -1:
+    end = len(props)
+
+  return props[start:end]
 
 
 def botReady(info):
