@@ -253,7 +253,7 @@ async def getPlayers(ctx: discord.AutocompleteContext):
   try:
     status = server.status()
     return [player.name for player in status.players.sample] if status.players.sample else []
-  except Exception as e:
+  except:
     return []
 
 
