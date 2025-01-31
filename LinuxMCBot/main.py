@@ -9,7 +9,6 @@ import psutil
 import discord
 from mcstatus import JavaServer
 
-
 subprocess.call(f"clear", shell=True)
 print("\033[33mPlease use ctrl + c to shutdown the bot\033[0m")
 updates.UpdateChecker()
@@ -111,7 +110,8 @@ async def start(ctx):
         embed=discord.Embed(
           color=config.color,
           description="Server is already running"
-        )
+        ),
+        ephemeral=True
       )
     else:
       subprocess.call(f"x-terminal-emulator -e tmux new-session -s minecraft-server -c {config.home} './{config.start}' &", shell=True)
@@ -142,7 +142,8 @@ async def stop(ctx):
         embed=discord.Embed(
           color=config.color,
           description="Server isn't running"
-        )
+        ),
+        ephemeral=True
       )
 
 
@@ -150,19 +151,7 @@ async def stop(ctx):
 @discord.guild_only()
 async def status(ctx):
   if await utils.isValidUser(ctx):
-    try:
-      with open(f"{config.home}/server.properties") as props:
-        read = props.read()
-    except:
-      await ctx.respond(
-        embed=discord.Embed(
-          color=config.color,
-          description="server.properties not found!"
-        )
-      )
-      return
-
-    port = utils.getProp(read, "server-port")
+    port = utils.getProp("server-port")
     server = JavaServer.lookup(f"localhost:{port}")
     try:
       status = server.status()
@@ -231,6 +220,7 @@ async def health(ctx, memory: discord.commands.Option(bool, "use --memory", requ
           color=config.color,
           description="Server is offline"
         ),
+        ephemeral=True
       )
 
 
@@ -247,6 +237,44 @@ async def profile(ctx):
         ephemeral=True
       )
       utils.tmuxSend("spark profiler open", message)
+    else:
+      await ctx.respond(
+        embed=discord.Embed(
+          color=config.color,
+          description="Server is offline"
+        ),
+        ephemeral=True
+      )
+
+
+async def getPlayers(ctx: discord.AutocompleteContext):
+  port = utils.getProp("server-port")
+  server = JavaServer.lookup(f"localhost:{port}")
+  try:
+    status = server.status()
+    return [player.name for player in status.players.sample] if status.players.sample else []
+  except Exception as e:
+    return []
+
+
+@bot.slash_command(description="(Admin Only) Kick player from the server.")
+@discord.guild_only()
+async def kick(
+  ctx,
+  player: discord.commands.Option(str, "Player to kick.", autocomplete=discord.utils.basic_autocomplete(getPlayers)),
+  message: discord.commands.Option(str, "Kick message.", required=False)
+):
+  if await utils.isAdminUser(ctx):
+    if utils.isTmuxActive():
+      extra = message.replace("'", "'\\''") if message is not None else ''
+      utils.tmuxSend(f"kick {player} {extra}")
+      await ctx.respond(
+        embed=discord.Embed(
+          color=config.color,
+          description=f"Kicked {player}"
+        ),
+        ephemeral=True
+      )
     else:
       await ctx.respond(
         embed=discord.Embed(
