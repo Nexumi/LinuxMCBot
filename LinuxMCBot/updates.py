@@ -18,10 +18,7 @@ def check():
 
 
 def new(version):
-  return config.version["major"] < version["major"] or\
-         config.version["minor"] < version["minor"] or\
-         config.version["patch"] < version["patch"]
-
+  return tuple(config.version.values()) < tuple(version.values())
 
 def simpleName(v = config.version):
   return f"v{v['major']}.{v['minor']}.{v['patch']}"
