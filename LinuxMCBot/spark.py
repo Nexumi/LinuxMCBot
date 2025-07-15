@@ -52,7 +52,10 @@ class WaitForLog(commands.Cog):
           line = data[i]
           if "[⚡]" in line:
             currentTime = datetime.datetime.now()
-            logTime = datetime.datetime.strptime(line[1:line.index("]")], "%d%b%Y %H:%M:%S.%f")
+            try:
+              logTime = datetime.datetime.strptime(line[1:line.index("]")], "%d%b%Y %H:%M:%S.%f")
+            except:
+              logTime = datetime.datetime.strptime(line[1:line.index("]")], "%H:%M:%S")
             diffTime = abs((currentTime - logTime).total_seconds())
             if diffTime < 1:
               if self.link:
