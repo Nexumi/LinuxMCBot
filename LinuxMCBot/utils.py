@@ -41,8 +41,14 @@ def getProp(prop):
 
   return props[start:end]
 
+def botInvite(cid):
+  print()
+  print(f"Invite Link: https://discord.com/oauth2/authorize?client_id={cid}&permissions=0&integration_type=0&scope=applications.commands+bot")
+  print()
 
 def botReady(info):
+  botInvite(info.id)
+
   if config.game is None:
     print(f"{info.name} is ready")
   else:
