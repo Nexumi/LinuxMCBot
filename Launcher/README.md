@@ -1,7 +1,7 @@
 # Launcher
 > Simple script to launch LinuxMCBot in a terminal
 
-Workaround code to launch precompiled version in a terminal. NOT required if running bot from source.
+Workaround code to launch compiled version in a terminal. NOT required if running bot from source.
 
 ## Build
 ```
