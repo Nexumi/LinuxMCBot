@@ -1,6 +1,7 @@
 import config
 import spark
 
+import os
 import time
 import subprocess
 import discord
@@ -58,8 +59,26 @@ def botReady(info):
 
 # subprocess Functions
 
+_SYSTEM_ENV = None
+
+
+def system_env():
+  global _SYSTEM_ENV
+  if _SYSTEM_ENV is None:
+    env = os.environ.copy()
+    env.pop("LD_LIBRARY_PATH", None)
+    _SYSTEM_ENV = env
+  return _SYSTEM_ENV
+
+
 def Popen(command):
-  out, err = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True).communicate()
+  out, err = subprocess.Popen(
+    command,
+    stdout=subprocess.PIPE,
+    stderr=subprocess.PIPE,
+    shell=True,
+    env=system_env(),
+  ).communicate()
   return out.decode("utf-8"), err.decode("utf-8") 
 
 
