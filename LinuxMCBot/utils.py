@@ -67,6 +67,7 @@ def isTmuxActive():
   out, err = Popen("tmux ls | grep minecraft-server")
   return out.startswith("minecraft-server: ")
 
+
 def tmuxSend(command, message=None):
   subprocess.call(f"tmux send-keys -t minecraft-server C-z '{command}' Enter", shell=True)
   if command.startswith("spark "):
