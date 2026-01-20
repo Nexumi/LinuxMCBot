@@ -105,7 +105,7 @@ async def start(ctx):
     out, err = utils.Popen("tmux ls | grep minecraft-server")
     if out.startswith("minecraft-server: "):
       if "(attached)" not in out:
-        subprocess.call(f"x-terminal-emulator -e tmux a -t minecraft-server &", shell=True)
+        utils.tmuxCall(f"x-terminal-emulator -e tmux a -t minecraft-server &")
       await ctx.respond(
         embed=discord.Embed(
           color=config.color,
@@ -114,8 +114,8 @@ async def start(ctx):
         ephemeral=True
       )
     else:
-      subprocess.call(f"x-terminal-emulator -e tmux new-session -s minecraft-server -c {config.home} './{config.start}' &", shell=True)
-      subprocess.call("sleep 1 && tmux set-option -t minecraft-server -g mouse on &", shell=True)
+      utils.tmuxCall(f"x-terminal-emulator -e tmux new-session -s minecraft-server -c {config.home} './{config.start}' &")
+      utils.tmuxCall("sleep 1 && tmux set-option -t minecraft-server -g mouse on &")
       message = await ctx.respond(
         embed=discord.Embed(
           color=config.color,

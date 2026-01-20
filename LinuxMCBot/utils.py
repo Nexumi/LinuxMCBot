@@ -62,7 +62,7 @@ def botReady(info):
 _SYSTEM_ENV = None
 
 
-def system_env():
+def sysEnv():
   global _SYSTEM_ENV
   if _SYSTEM_ENV is None:
     env = os.environ.copy()
@@ -77,9 +77,13 @@ def Popen(command):
     stdout=subprocess.PIPE,
     stderr=subprocess.PIPE,
     shell=True,
-    env=system_env(),
+    env=sysEnv(),
   ).communicate()
-  return out.decode("utf-8"), err.decode("utf-8") 
+  return out.decode("utf-8"), err.decode("utf-8")
+
+
+def tmuxCall(command):
+  subprocess.call(command, shell=True, env=sysEnv())
 
 
 def isTmuxActive():
