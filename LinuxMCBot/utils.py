@@ -93,7 +93,11 @@ def isTmuxActive():
 
 
 def tmuxSend(command, message=None):
-  subprocess.call(f"tmux send-keys -t minecraft-server C-z '{command}' Enter", shell=True)
+  out, err = Popen("tmux list-panes -t minecraft-server -F '#{pane_index} #{pane_in_mode}'")
+  if out.strip() == "0 1":
+    tmuxCall("tmux send-keys -t minecraft-server q")
+
+  tmuxCall(f"tmux send-keys -t minecraft-server '{command}' Enter")
   if command.startswith("spark "):
     spark.WaitForLog(message)
 
