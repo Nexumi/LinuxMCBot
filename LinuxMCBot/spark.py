@@ -1,7 +1,7 @@
 import utils
 import config
 
-import datetime
+from datetime import datetime, timedelta
 import discord
 from discord.ext import tasks, commands
 from discord.utils import escape_markdown
@@ -13,6 +13,7 @@ class WaitForLog(commands.Cog):
 
     self.timeout = 20
     self.seconds = 0
+    self.currentTime = datetime.now()
     self.check.start()
 
 
@@ -51,19 +52,20 @@ class WaitForLog(commands.Cog):
         for i in range(-1, -len(data) - 1, -1):
           line = data[i]
           if "[⚡]" in line:
-            currentTime = datetime.datetime.now()
             try:
-              logTime = datetime.datetime.strptime(line[1:line.index("]")], "%d%b%Y %H:%M:%S.%f")
+              logTime = datetime.strptime(line[1:line.index("]")], "%d%b%Y %H:%M:%S.%f")
             except:
-              logTime = datetime.datetime.strptime(line[1:line.index("]")], "%H:%M:%S")
-            diffTime = abs((currentTime - logTime).total_seconds())
-            if diffTime < 1:
+              logTime = datetime.strptime(line[1:line.index("]")], "%H:%M:%S")
+              logTime = datetime.combine(self.currentTime.date(), logTime)
+              if self.currentTime.hour == 23 and logTime.hour == 0:
+                logTime += timedelta(days=1)
+            if logTime >= self.currentTime:
               if self.link:
                 await self.showURL(data[i + 1])
               else:
                 await self.showHealth(data[i + 2:])
               self.check.cancel()
-            break
+            return
     else:
       await self.message.edit(
         embed=discord.Embed(
