@@ -27,7 +27,7 @@ def parse():
         elif line.startswith("roles = "):
           rolls = line[8:]
           if rolls.startswith("[") and rolls.endswith("]"):
-            rolls = rolls[1:-1].replace(", ", ",").split(",")
+            rolls = rolls[1:-1].replace(" ", "").split(",")
             for role in rolls:
               if role and role not in roles:
                 roles.append(role)
@@ -42,6 +42,8 @@ def parse():
           elif message.startswith("Watching "):
             message = message[9:]
             game = discord.Activity(name=message, type=discord.ActivityType.watching)
+          else:
+            game = None
         elif line.startswith("status = "):
           mode = line[9:]
           if mode == "ONLINE":
@@ -52,6 +54,8 @@ def parse():
             status = discord.Status.dnd
           elif mode == "INVISIBLE":
             status = discord.Status.invisible
+          else:
+            status = discord.Status.online
         elif line.startswith("color = "):
           color = utils.hexaToDeci(line[8:])
         elif line.startswith("update = "):
