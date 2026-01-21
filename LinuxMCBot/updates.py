@@ -26,7 +26,8 @@ def simpleName(v = config.version):
 
 class UpdateChecker(commands.Cog):
   def __init__(self):
-    self.check.start()
+    if config.update:
+      self.check.start()
 
 
   @tasks.loop(hours=24)

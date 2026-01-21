@@ -48,7 +48,8 @@ def botInvite(cid):
   print()
 
 def botReady(info):
-  botInvite(info.id)
+  if config.invite:
+    botInvite(info.id)
 
   if config.game is None:
     print(f"{info.name} is ready")

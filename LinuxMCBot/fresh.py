@@ -51,6 +51,18 @@ status = ONLINE
 color = #000000
 
 
+# Check for updates
+# Valid values: True False
+
+update = True
+
+
+# Show bot invite url when bot starts up
+# Valid values: True False
+
+invite = True
+
+
 # Documentation
 
 mods = https://drive.google.com/

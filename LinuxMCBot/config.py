@@ -5,7 +5,7 @@ import discord
 
 
 def parse():
-  global token, admins, game, status, color, mods, forge, guide, name, ip, home, start
+  global token, admins, game, status, color, update, invite, mods, forge, guide, name, ip, home, start
 
   with open("config.txt") as cfg:
     data = cfg.read().splitlines()
@@ -16,7 +16,7 @@ def parse():
         elif line.startswith("admins = "):
           ids = line[9:]
           if ids.startswith("[") and ids.endswith("]"):
-            ids = ids[1:-1].replace(", ", ",").split(",")
+            ids = ids[1:-1].replace(" ", "").split(",")
             for ID in ids:
               try:
                 ID = int(ID)
@@ -54,6 +54,12 @@ def parse():
             status = discord.Status.invisible
         elif line.startswith("color = "):
           color = utils.hexaToDeci(line[8:])
+        elif line.startswith("update = "):
+          message = line[9:]
+          update = message.lower() != "false"
+        elif line.startswith("invite = "):
+          message = line[9:]
+          invite = message.lower() != "false"
         elif line.startswith("mods = "):
           mods = line[7:]
         elif line.startswith("forge = "):
@@ -76,6 +82,8 @@ roles = []
 game = None
 status = discord.Status.online
 color = 0
+update = True
+invite = True
 mods = ""
 forge = ""
 guide = ""
@@ -87,6 +95,6 @@ start = ""
 
 version = {
   "major": 1,
-  "minor": 2,
-  "patch": 1
+  "minor": 3,
+  "patch": 0
 }

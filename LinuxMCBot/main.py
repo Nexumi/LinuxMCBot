@@ -290,6 +290,7 @@ async def kick(
 async def reload(ctx):
   if await utils.isAdminUser(ctx):
     config.parse()
+    updates.UpdateChecker()
     await bot.change_presence(status=config.status, activity=config.game)
     utils.botReady(await bot.application_info())
     await ctx.respond(
