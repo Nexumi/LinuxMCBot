@@ -7,9 +7,8 @@ from discord.ext import tasks, commands
 from discord.utils import escape_markdown
 
 class WaitForLog(commands.Cog):
-  def __init__(self, message, link):
+  def __init__(self, message):
     self.message = message
-    self.link = link
 
     self.timeout = 20
     self.seconds = 0
@@ -51,7 +50,7 @@ class WaitForLog(commands.Cog):
         data = log.read().splitlines()[-50:]
         for i in range(-1, -len(data) - 1, -1):
           line = data[i]
-          if "[⚡]" in line:
+          if (link := "[⚡] Profiler live viewer:" in line) or "[⚡] Generating server health report..." in line:
             try:
               logTime = datetime.strptime(line[1:line.index("]")], "%d%b%Y %H:%M:%S.%f")
             except:
@@ -60,7 +59,7 @@ class WaitForLog(commands.Cog):
               if self.currentTime.hour == 23 and logTime.hour == 0:
                 logTime += timedelta(days=1)
             if logTime >= self.currentTime:
-              if self.link:
+              if link:
                 await self.showURL(data[i + 1])
               else:
                 await self.showHealth(data[i + 2:])

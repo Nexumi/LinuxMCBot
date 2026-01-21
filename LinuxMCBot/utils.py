@@ -95,7 +95,7 @@ def isTmuxActive():
 def tmuxSend(command, message=None):
   subprocess.call(f"tmux send-keys -t minecraft-server C-z '{command}' Enter", shell=True)
   if command.startswith("spark "):
-    spark.WaitForLog(message, command == "spark profiler open")
+    spark.WaitForLog(message)
 
 
 # Validation Functions
